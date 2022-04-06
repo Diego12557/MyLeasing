@@ -39,8 +39,8 @@ namespace MyLeasing.Web
             //Inyeccion: Lo Hace una Vez y no lo vuelve a ejecutar
             services.AddTransient<SeedDb>();
             //Inyeccion: Cuando lo llama la primera vez, lo crea en memoria y se la manda y no lo destruye
-            //services.AddSingleton<UserHelper>();...........................
-            //Inyeccion: Lo Inyecta cada vez que lo necesita y crea un nuevo objeto
+            services.AddSingleton<UserHelper>();
+            //Inyeccion: Lo Inyecta cada vez que lo necesita y crea un nuevo objeto con interfaz
             services.AddScoped<IUserHelper, UserHelper>();
 
 

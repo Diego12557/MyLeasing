@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Models;
 namespace MyLeasing.Web.Data
 {
     public class DataContext : IdentityDbContext<User>
@@ -16,6 +17,7 @@ namespace MyLeasing.Web.Data
         public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<PropertyType> PropertyTypes { get; set; }
         public DbSet<Manager> Managers { get; set; }
+        public DbSet<MyLeasing.Web.Models.LoginViewModel> LoginViewModel { get; set; }
 
     }
 }
