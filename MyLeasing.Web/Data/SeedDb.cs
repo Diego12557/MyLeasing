@@ -31,7 +31,7 @@ namespace MyLeasing.Web.Data
             await CheckRoles();
             var manager = await CheckUserAsync("1010", "Diego", "Romero", "dieguito12557@gmail.com", "350 527 2318", "Calle Luna Calle Sol", "Manager");
             var owner = await CheckUserAsync("2020", "Vanessa", "Romero", "vrb@gmail.com", "350 634 2747", "Calle Luna Calle Sol", "Owner");
-            var lessee = await CheckUserAsync("3020", "Juan", "Zuluaga", "carlos.zuluaga@globant.com", "350 634 2747", "Calle Luna Calle Sol", "Lessee");
+            var lessee = await CheckUserAsync("3020", "Juan", "Zuluaga", "diego.romero@gmail.com", "350 634 2747", "Calle Luna Calle Sol", "Lessee");
             await CheckPropertyTypesAsync();
             await CheckManagerAsync(manager);
             await CheckOwnersAsync(owner);
@@ -103,7 +103,7 @@ namespace MyLeasing.Web.Data
                     Document = document
                 };
 
-                await _userHelper.AddUserAsync(user, "1234567");
+                await _userHelper.AddUserAsync(user, "123456");
                 await _userHelper.AddUserToRoleAsync(user, role);
             }
 
@@ -159,7 +159,15 @@ namespace MyLeasing.Web.Data
             }
         }
 
-        private void AddProperty(string address, string neighborhood, Owner owner, PropertyType propertyType, decimal price, int rooms, int squareMeters, int stratum)
+        private void AddProperty(
+            string address, 
+            string neighborhood, 
+            Owner owner, 
+            PropertyType propertyType, 
+            decimal price, 
+            int rooms, 
+            int squareMeters,
+            int stratum)
         {
             _context.Properties.Add(new Property
             {
