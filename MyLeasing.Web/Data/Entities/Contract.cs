@@ -38,7 +38,8 @@ namespace MyLeasing.Web.Data.Entities
         public DateTime EndDateLocal => EndDate.ToLocalTime();
 
         public Owner Owner { get; set; }
-        public Lessee Le { get; set; }
+        public Lessee Lessee { get; set; }
         public Property Property { get; set; }
+        //public Lessee Lessee { get; internal set; }
     }
 }

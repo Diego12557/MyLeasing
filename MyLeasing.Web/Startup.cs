@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyLeasing.Web.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Helpers;
 
 namespace MyLeasing.Web
 {
@@ -27,7 +25,25 @@ namespace MyLeasing.Web
         {
 
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<User, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequireDigit = false;
+                cfg.Password.RequiredUniqueChars = 0;
+                cfg.Password.RequireLowercase = false;
+                cfg.Password.RequireNonAlphanumeric = false;
+                cfg.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<DataContext>();
+
+            //Inyeccion: Lo Hace una Vez y no lo vuelve a ejecutar
             services.AddTransient<SeedDb>();
+            //Inyeccion: Cuando lo llama la primera vez, lo crea en memoria y se la manda y no lo destruye
+            //services.AddSingleton<UserHelper>();...........................
+            //Inyeccion: Lo Inyecta cada vez que lo necesita y crea un nuevo objeto
+            services.AddScoped<IUserHelper, UserHelper>();
+
+
             services.AddControllersWithViews();
         }
 
@@ -46,7 +62,7 @@ namespace MyLeasing.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

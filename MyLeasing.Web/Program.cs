@@ -7,9 +7,9 @@ namespace MyLeasing.Web
 {
     public class Program
     {
+        //Para que empiece a correr desde aqui
         public static void Main(string[] args)
         {
-            //Corriendo los SeedDb
             var host = CreateWebHostBuilder(args).Build();
             RunSeeding(host);
             host.Run();
@@ -31,4 +31,3 @@ namespace MyLeasing.Web
         }
     }
 }
-
