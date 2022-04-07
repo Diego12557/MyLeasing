@@ -16,27 +16,42 @@ namespace MyLeasing.Web.Controllers
         }
 
 
-        [HttpGet]
+        
         public IActionResult Login()
         {
             return View();
         }
 
 
-
+        //Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home" );
+             
                 }
+
+                ModelState.AddModelError(string.Empty, "Usuario o Contraseña incorrectas");
+
+
             }
             return View(model);
         }
+
+        //Cerrar Sesion
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _userHelper.LogoutAsync();
+            return RedirectToAction("Index", "Home");
+            
+        }
+
 
     }
 }
