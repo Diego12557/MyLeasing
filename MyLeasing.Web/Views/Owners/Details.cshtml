@@ -4,15 +4,124 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Owner</h1>
 
 <div>
-    <h4>Owner</h4>
+    <h4>Details</h4>
     <hr />
     <dl class="row">
-    </dl>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Document)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Document)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.User.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.User.PhoneNumber)
+        </dd>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.id" class="btn btn-warning">Edit</a> |
+    <a asp-action="AddProperty" asp-route-id="@Model.id" class="btn btn-primery">Add Property</a> |
+    <a asp-action="Index" class="btn btn-success">Back to List</a>
 </div>
+@if (Model.properties.Count == 0)
+{
+    <h5>Not Properties added yet.  </h5>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().Neighborhood)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().SquareMeters)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().Rooms)
+                </th>
+                 <th>
+                    @Html.DisplayNameFor(model => model.properties.FirstOrDefault().IsAvailable)
+                </th>
+                 <th>
+                    Images
+                </th>
+                 <th>
+                    Contracts
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.properties)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Neighborhood)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SquareMeters)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Rooms)
+                    </td>
+                     <td>
+                        @Html.DisplayFor(modelItem => item.IsAvailable)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PropertyImages.Count)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Contracts.Count)
+                    </td>
+                    <td>
+                        <a asp-action="EditProperty" asp-route-id="@item.Id" class="btn btn-warning">Edit</a> |
+                        <a asp-action="DetailsProperty" asp-route-id="@item.Id" class="btn btn-info">Details</a> |
+                        <a asp-action="DeleteProperty " asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

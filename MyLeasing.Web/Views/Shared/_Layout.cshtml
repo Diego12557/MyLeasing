@@ -24,9 +24,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Manager")) 
+                        {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Owners" asp-action="Index">Owners</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="PropertyTypes" asp-action="Index">Property Types</a>
+                        </li>
+                        }
+                       
+
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
     	                @if (User.Identity.IsAuthenticated)

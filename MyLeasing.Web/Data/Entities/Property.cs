@@ -26,7 +26,7 @@ namespace MyLeasing.Web.Data.Entities
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public int SquareMeters { get; set; }
 
-        [Display(Name = "Square meters")]
+        [Display(Name = "Rooms")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public int Rooms { get; set; }
 
@@ -45,7 +45,7 @@ namespace MyLeasing.Web.Data.Entities
         public PropertyType PropertyType { get; set; }
         public Owner Owner { get; set; }
 
-        public ICollection<PropertyImage> propertyImages { get; set; }
+        public ICollection<PropertyImage> PropertyImages { get; set; }
         public ICollection<Contract> Contracts { get; set; }
     }
 

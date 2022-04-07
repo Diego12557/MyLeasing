@@ -1,79 +1,71 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data;
 using MyLeasing.Web.Data.Entities;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MyLeasing.Web.Controllers
 {
-    [Authorize(Roles = "Manager")]
-    public class OwnersController : Controller
+    public class PropertyTypesController : Controller
     {
-        private readonly DataContext _dataContext;
+        private readonly DataContext _context;
 
-        public OwnersController(DataContext dataContext)
+        public PropertyTypesController(DataContext context)
         {
-            _dataContext = dataContext;
+            _context = context;
         }
 
-        // GET: Owners
-        public IActionResult Index()
+        // GET: PropertyTypes
+        public async Task<IActionResult> Index()
         {
-            //Este es el INNER JOIN del modelo Owner con User
-            return View(_dataContext.owners.Include(o => o.User).Include(o => o.properties).Include(o => o.Contracts));
+            return View(await _context.PropertyTypes.ToListAsync());
         }
 
-        // GET: Owners/Details/5
-        //El signo es que puede llegar NUll
+        // GET: PropertyTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                //NotFound, No lo encontre
                 return NotFound();
             }
 
-            var owner = await _dataContext.owners
-                .Include(o => o.User)
-                .Include(o => o.properties)
-                .ThenInclude(p => p.PropertyImages)
-                .Include(o => o.Contracts)
-                .ThenInclude(c => c.Lessee)
-                .Include(l => l.User)
-                .FirstOrDefaultAsync(o => o.id == id);
-            if (owner == null)
+            var propertyType = await _context.PropertyTypes
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (propertyType == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(propertyType);
         }
 
-        // GET: Owners/Create
+        // GET: PropertyTypes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Owners/Create
+        // POST: PropertyTypes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id")] Owner owner)
+        public async Task<IActionResult> Create([Bind("Id,Name")] PropertyType propertyType)
         {
             if (ModelState.IsValid)
             {
-                _dataContext.Add(owner);
-                await _dataContext.SaveChangesAsync();
+                _context.Add(propertyType);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(propertyType);
         }
 
-        // GET: Owners/Edit/5
+        // GET: PropertyTypes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,22 +73,22 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _dataContext.owners.FindAsync(id);
-            if (owner == null)
+            var propertyType = await _context.PropertyTypes.FindAsync(id);
+            if (propertyType == null)
             {
                 return NotFound();
             }
-            return View(owner);
+            return View(propertyType);
         }
 
-        // POST: Owners/Edit/5
+        // POST: PropertyTypes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id")] Owner owner)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] PropertyType propertyType)
         {
-            if (id != owner.id)
+            if (id != propertyType.Id)
             {
                 return NotFound();
             }
@@ -105,12 +97,12 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    _dataContext.Update(owner);
-                    await _dataContext.SaveChangesAsync();
+                    _context.Update(propertyType);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OwnerExists(owner.id))
+                    if (!PropertyTypeExists(propertyType.Id))
                     {
                         return NotFound();
                     }
@@ -121,10 +113,10 @@ namespace MyLeasing.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(propertyType);
         }
 
-        // GET: Owners/Delete/5
+        // GET: PropertyTypes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -132,30 +124,30 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var owner = await _dataContext.owners
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (owner == null)
+            var propertyType = await _context.PropertyTypes
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (propertyType == null)
             {
                 return NotFound();
             }
 
-            return View(owner);
+            return View(propertyType);
         }
 
-        // POST: Owners/Delete/5
+        // POST: PropertyTypes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var owner = await _dataContext.owners.FindAsync(id);
-            _dataContext.owners.Remove(owner);
-            await _dataContext.SaveChangesAsync();
+            var propertyType = await _context.PropertyTypes.FindAsync(id);
+            _context.PropertyTypes.Remove(propertyType);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OwnerExists(int id)
+        private bool PropertyTypeExists(int id)
         {
-            return _dataContext.owners.Any(e => e.id == id);
+            return _context.PropertyTypes.Any(e => e.Id == id);
         }
     }
 }
