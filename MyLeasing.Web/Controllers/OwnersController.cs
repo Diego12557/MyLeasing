@@ -5,8 +5,6 @@ using MyLeasing.Web.Data;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Helpers;
 using MyLeasing.Web.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,11 +15,19 @@ namespace MyLeasing.Web.Controllers
     {
         private readonly DataContext _dataContext;
         private readonly IUserHelper _userHelper;
+        private readonly ICombosHelper _combosHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public OwnersController(DataContext dataContext, IUserHelper userHelper)
+        public OwnersController(
+            DataContext dataContext,
+            IUserHelper userHelper,
+            ICombosHelper combosHelper,
+            IConverterHelper converterHelper)
         {
             _dataContext = dataContext;
             _userHelper = userHelper;
+            _combosHelper = combosHelper;
+            _converterHelper = converterHelper;
         }
 
         // GET: Owners
@@ -64,7 +70,7 @@ namespace MyLeasing.Web.Controllers
         }
 
         // POST: Owners/Create
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddUserViewModel model)
@@ -72,12 +78,12 @@ namespace MyLeasing.Web.Controllers
             if (ModelState.IsValid)
             {
                 var user = await CreateUserAsync(model);
-                if(user != null)
+                if (user != null)
                 {
                     var owner = new Owner
                     {
-                        Contracts = new List<Contract>(),
-                        properties = new List<Property>(),
+                        Contracts = new System.Collections.Generic.List<Contract>(),
+                        properties = new System.Collections.Generic.List<Property>(),
                         User = user
 
                     };
@@ -200,5 +206,46 @@ namespace MyLeasing.Web.Controllers
         {
             return _dataContext.owners.Any(e => e.id == id);
         }
+
+        //EN el GET Se envia el ID y el POST se Envia el modelo
+        [HttpGet]
+        public async Task<IActionResult> AddProperty(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            //Se Buscar, el FindAsync busca por la clave primaria (codigo propietario)  
+            var owner = await _dataContext.owners.FindAsync(id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+
+            var model = new PropertyViewModel
+            {
+                OwnerId = owner.id,
+                PropertyTypes = _combosHelper.GetComboPropertyTypes(),
+            };
+
+            return View(model);
+        }
+
+        //POST 
+        [HttpPost]
+        public async Task<IActionResult> AddProperty(PropertyViewModel model)
+        {
+            if (model.IsAvailable)
+            {
+                var property = await _converterHelper.ToPropertyAsync(model, true);
+                _dataContext.Properties.Add(property);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction($"Details/{model.OwnerId}");
+            }
+
+            return View(model);
+        }
+
+
     }
 }

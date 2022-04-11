@@ -12,17 +12,17 @@ namespace MyLeasing.Web.Controllers
 {
     public class PropertyTypesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext;
 
         public PropertyTypesController(DataContext context)
         {
-            _context = context;
+            _dataContext = context;
         }
 
         // GET: PropertyTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.PropertyTypes.ToListAsync());
+            return View(await _dataContext.PropertyTypes.ToListAsync());
         }
 
         // GET: PropertyTypes/Details/5
@@ -33,8 +33,8 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var propertyType = await _context.PropertyTypes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var propertyType = await _dataContext.PropertyTypes
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (propertyType == null)
             {
                 return NotFound();
@@ -58,8 +58,8 @@ namespace MyLeasing.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(propertyType);
-                await _context.SaveChangesAsync();
+                _dataContext.Add(propertyType);
+                await _dataContext.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(propertyType);
@@ -73,7 +73,7 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var propertyType = await _context.PropertyTypes.FindAsync(id);
+            var propertyType = await _dataContext.PropertyTypes.FindAsync(id);
             if (propertyType == null)
             {
                 return NotFound();
@@ -97,8 +97,8 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    _context.Update(propertyType);
-                    await _context.SaveChangesAsync();
+                    _dataContext.Update(propertyType);
+                    await _dataContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -124,7 +124,7 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var propertyType = await _context.PropertyTypes
+            var propertyType = await _dataContext.PropertyTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (propertyType == null)
             {
@@ -139,15 +139,15 @@ namespace MyLeasing.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var propertyType = await _context.PropertyTypes.FindAsync(id);
-            _context.PropertyTypes.Remove(propertyType);
-            await _context.SaveChangesAsync();
+            var propertyType = await _dataContext.PropertyTypes.FindAsync(id);
+            _dataContext.PropertyTypes.Remove(propertyType);
+            await _dataContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PropertyTypeExists(int id)
         {
-            return _context.PropertyTypes.Any(e => e.Id == id);
+            return _dataContext.PropertyTypes.Any(e => e.Id == id);
         }
     }
 }
